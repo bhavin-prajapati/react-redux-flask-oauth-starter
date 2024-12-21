@@ -1,5 +1,5 @@
-# tiny-chess
-A tiny chess server written from scratch using React, Python, Flask and Redis
+# react-redux-flask-oauth-starter
+A Starter Kit for React, Redux and Flask with Social Media login integrated
 
 ### Redis
 ```sh
@@ -7,17 +7,14 @@ brew install redis
 redis-server
 ```
 
-### tiny-chess-client
+### client
 ```sh
 npm install
 npm run build
-npm run dev
 ```
 
-
-### tiny-chess-server
+### server
 ```sh
-pip install flask
-pip install redis
-flask --app tiny_chess_server run
+pip3 install -r requirements.txt
+export FLASK_APP=run.py;export FLASK_ENV=development; flask run --cert=adhoc
 ```
