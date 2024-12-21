@@ -1,0 +1,6 @@
+flask==3.0.3
+flask-dance==7.1.0
+python-decouple==3.4
+gunicorn==20.1.0
+pyopenssl===21.0.0
+Werkzeug==3.0.3
