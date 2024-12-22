@@ -1,24 +1,34 @@
-import { useState } from 'react'
+// App.jsx
+import React, { Component } from 'react';
+import { instanceOf } from 'prop-types';
+import { withCookies, Cookies } from 'react-cookie';
 import reactLogo from './assets/BB.svg'
 import viteLogo from '/vite.svg'
-import Example from './Example'
+import Dashboard from './Dashboard'
 
-function App() {
-  const [count, setCount] = useState(0)
+class App extends Component {
+  static propTypes = {
+    cookies: instanceOf(Cookies).isRequired
+  };
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <Example />
-    </>
-  )
+  constructor(props) {
+    super(props);
+    const { cookies } = props;
+    const user_b64 = cookies.get('user').replace('\'', '').replace('\'', '')
+    let user = JSON.parse(window.atob(user_b64));
+    this.state = {
+      user
+    };
+  }
+
+  render() {
+    const { user } = this.state;
+    return (
+      <>
+        <Dashboard user={user} />
+      </>
+    );
+  }
 }
 
-export default App
+export default withCookies(App);
