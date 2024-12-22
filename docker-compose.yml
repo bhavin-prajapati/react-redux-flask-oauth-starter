@@ -1,0 +1,31 @@
+services:
+  redis:
+    image: redis:6-alpine
+
+  client:
+    container_name: react-client
+    build:
+      context: ./client
+    ports:
+      - "3000:3000"
+    volumes:
+     - .:/app
+     - ./node_modules:/app/node_modules
+    env_file:
+      - .env.dev
+    stdin_open: true
+    tty: true
+    command: npm dev
+
+  server:
+    container_name: flask-server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    command: flask run --cert=adhoc
+    network_mode: host
+    ports:
+      - 5000:5000
+    depends_on:
+      - client
+

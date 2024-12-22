@@ -8,7 +8,8 @@ from flask_dance.contrib.github import make_github_blueprint, github
 from decouple import config
 
 # Construct the Flask APP
-app = Flask(__name__, template_folder='./static')
+client_build = '../../client/dist/'
+app = Flask(__name__, template_folder=client_build)
 
 # Inject the Configuration (loaded from .env)
 app.config.from_object('app.config.Config')
@@ -44,7 +45,7 @@ def index():
 
 @app.route('/<path:filename>')
 def custom_static(filename):
-    return send_from_directory('./static', filename)
+    return send_from_directory(client_build, filename)
 
 @app.route("/hello")
 def hello_world():
