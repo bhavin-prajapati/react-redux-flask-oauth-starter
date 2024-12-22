@@ -33,7 +33,8 @@ def index():
         name=resp.json()["name"]
         email=resp.json()["email"]
         avatar_url=resp.json()["avatar_url"]
-        user={"username":str(username),"name":str(name),"email": str(email),"avatar_url": str(avatar_url)}
+        github_login_url=url_for('github.login')
+        user={"username":str(username),"name":str(name),"email": str(email),"avatar_url": str(avatar_url),"github_login_url":str(github_login_url)}
     response = make_response(render_template( 'index.html', github=github, github_id=username, user=user))
     user_json = json.dumps(user, ensure_ascii=False)
     user_json_b64 = base64.b64encode(bytes(user_json, 'utf-8'))

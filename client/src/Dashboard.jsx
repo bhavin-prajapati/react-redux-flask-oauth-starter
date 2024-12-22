@@ -8,11 +8,6 @@ const navigation = [
   { name: 'Calendar', href: '#', current: false },
   { name: 'Reports', href: '#', current: false },
 ]
-const noUserNavigation = [
-  { name: 'Login with Facebook', href: '#' },
-  { name: 'Login with Google', href: '#' },
-  { name: 'Login with Github', href: '#' },
-]
 const userNavigation = [
   { name: 'Your Profile', href: '#' },
   { name: 'Settings', href: '#' },
@@ -70,16 +65,16 @@ export default function Dashboard({ user }) {
               </div>
               <div className="hidden md:block">
                 <div className="ml-4 flex items-center md:ml-6">
-                  <button
-                    type="button"
-                    className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                  >
-                    <span className="absolute -inset-1.5" />
-                    <span className="sr-only">View notifications</span>
-                    <BellIcon aria-hidden="true" className="size-6" />
-                  </button>
 
-                  {isUserLoggedIn ? (
+                  {isUserLoggedIn ? (<>
+                    <button
+                      type="button"
+                      className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                    >
+                      <span className="absolute -inset-1.5" />
+                      <span className="sr-only">View notifications</span>
+                      <BellIcon aria-hidden="true" className="size-6" />
+                    </button>
                     <Menu as="div" className="relative ml-3">
                       {/* Profile dropdown */}
                       <div>
@@ -105,31 +100,9 @@ export default function Dashboard({ user }) {
                         ))}
                       </MenuItems>
                     </Menu>
-                  )
+                  </>)
                     : (
-                      <Menu as="div" className="relative ml-3">
-                        {/* Login dropdown */}
-                        <div>
-                          <MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                            Login
-                          </MenuButton>
-                        </div>
-                        <MenuItems
-                          transition
-                          className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-                        >
-                          {noUserNavigation.map((item) => (
-                            <MenuItem key={item.name}>
-                              <a
-                                href={item.href}
-                                className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none"
-                              >
-                                {item.name}
-                              </a>
-                            </MenuItem>
-                          ))}
-                        </MenuItems>
-                      </Menu>
+                      <div></div>
                     )
                   }
                 </div>
@@ -183,23 +156,7 @@ export default function Dashboard({ user }) {
                   </button>
                 </div>
               ) : (
-                <div className="flex items-center px-5">
-                  <div className="shrink-0">
-                    <button
-                      type="button"
-                      className="relative ml-auto shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                    >
-                      Login
-                    </button>
-                  </div>
-                  <button
-                    type="button"
-                    className="relative ml-auto shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                  >
-                    <span className="absolute -inset-1.5" />
-                    <span className="sr-only">View notifications</span>
-                    <BellIcon aria-hidden="true" className="size-6" />
-                  </button>
+                <div>
                 </div>
               )}
               <div className="mt-3 space-y-1 px-2">

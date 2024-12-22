@@ -1,17 +1,25 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-    <script type="module" crossorigin src="/assets/index-CyGyUhNz.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-D2nd9TPy.css">
-  </head>
-  <body>
-    <main>
-      <div id="root"></div>  
-    </main>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite + React</title>
+  <script type="module" crossorigin src="/assets/index-CVrMK5t4.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-D2nd9TPy.css">
+</head>
+
+<body>
+  <main>
+    <div id="root"></div>
+    {% if github.authorized %}
+    {% else %}
+    <a href="{{ url_for('github.login') }}"
+      class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white" aria-current="page">Login with
+      Github</a>
+    {% endif %}
+  </main>
+</body>
 </html>
