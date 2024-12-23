@@ -5,11 +5,14 @@ import redis
 from flask import Flask, make_response, send_from_directory, redirect, url_for
 from flask import render_template, request, url_for, redirect
 from flask_dance.contrib.github import make_github_blueprint, github
+from flask_cors import CORS, cross_origin
 from decouple import config
 
 # Construct the Flask APP
 client_build = '../../client/dist/'
 app = Flask(__name__, template_folder=client_build)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}}) # allow CORS for all domains on all routes.
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Inject the Configuration (loaded from .env)
 app.config.from_object('app.config.Config')
@@ -43,11 +46,21 @@ def index():
     response.set_cookie("user", value=user_json_b64_str, max_age=None, expires=None, path='/', secure=None, httponly=False)
     return response
 
+@app.route('/api/v1/login-github')
+@cross_origin()
+def login_github():
+    """Log in a registered or authenticated user."""
+    if not github.authorized:
+        return redirect(url_for('github.login'))
+    res = github.get('/user')
+    print(request.referrer)
+    return redirect(request.referrer)
+
 @app.route('/<path:filename>')
 def custom_static(filename):
     return send_from_directory(client_build, filename)
 
-@app.route("/hello")
+@app.route("/api/v1/hello")
 def hello_world():
     count = r.get('count')
     if count == None:

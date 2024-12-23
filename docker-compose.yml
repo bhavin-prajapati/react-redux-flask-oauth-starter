@@ -5,27 +5,28 @@ services:
   client:
     container_name: react-client
     build:
-      context: ./client
+      context: ./
+      dockerfile: Dockerfile.dev
     ports:
-      - "3000:3000"
+      - "5173:5173"
     volumes:
-     - .:/app
-     - ./node_modules:/app/node_modules
+     - ./:/app
     env_file:
-      - .env.dev
-    stdin_open: true
-    tty: true
-    command: npm dev
+      - ./client/.env.dev
+    command: npm run dev
+    network_mode: host
 
   server:
     container_name: flask-server
     build:
-      context: ./server
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: Dockerfile.dev
     command: flask run --cert=adhoc
     network_mode: host
     ports:
       - 5000:5000
+    env_file:
+      - ./server/.env.dev
     depends_on:
       - client
 

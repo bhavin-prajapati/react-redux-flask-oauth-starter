@@ -2,9 +2,8 @@
 import React, { Component } from 'react';
 import { instanceOf } from 'prop-types';
 import { withCookies, Cookies } from 'react-cookie';
-import reactLogo from './assets/BB.svg'
-import viteLogo from '/vite.svg'
 import Dashboard from './Dashboard'
+import Signin from './Signin'
 
 class App extends Component {
   static propTypes = {
@@ -14,8 +13,12 @@ class App extends Component {
   constructor(props) {
     super(props);
     const { cookies } = props;
-    const user_b64 = cookies.get('user').replace('\'', '').replace('\'', '')
-    let user = JSON.parse(window.atob(user_b64));
+    let user_cookie = cookies.get('user')
+    let user = null
+    if (user_cookie) {
+      const user_b64 = user_cookie.replace('\'', '').replace('\'', '')
+      user = JSON.parse(window.atob(user_b64));
+    }
     this.state = {
       user
     };
@@ -25,7 +28,11 @@ class App extends Component {
     const { user } = this.state;
     return (
       <>
-        <Dashboard user={user} />
+        {user ? (
+          <Dashboard user={user} />
+        ) : (
+          <Signin />
+        )}
       </>
     );
   }

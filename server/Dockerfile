@@ -2,7 +2,7 @@
 FROM python:3.10-slim
 
 # set work directory
-WORKDIR '/app'
+WORKDIR /app
 
 # set env variables
 ENV FLASK_APP=run.py

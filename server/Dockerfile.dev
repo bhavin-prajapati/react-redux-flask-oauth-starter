@@ -2,7 +2,10 @@
 FROM python:3.10-slim
 
 # set work directory
-WORKDIR '/app'
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY requirements.txt ./
 
 # set env variables
 ENV FLASK_APP=run.py
