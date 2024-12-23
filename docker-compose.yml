@@ -5,7 +5,7 @@ services:
   client:
     container_name: react-client
     build:
-      context: ./
+      context: ./client
       dockerfile: Dockerfile.dev
     ports:
       - "5173:5173"
@@ -19,7 +19,7 @@ services:
   server:
     container_name: flask-server
     build:
-      context: ./
+      context: ./server
       dockerfile: Dockerfile.dev
     command: flask run --cert=adhoc
     network_mode: host
