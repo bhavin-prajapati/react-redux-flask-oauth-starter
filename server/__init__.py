@@ -19,7 +19,7 @@ app.config.from_object('app.config.Config')
 app.json.ensure_ascii = False
 
 # Connect to Redis
-r = redis.Redis(host=app.config['REDIS_SERVER_URL'], port=6379, db=0)
+r = redis.Redis(host='localhost', port=6379, db=0, protocol=3)
 
 # Register the Github OAuth BP built by Flask-Dance 
 github_bp = make_github_blueprint()
