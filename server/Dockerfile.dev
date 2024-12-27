@@ -2,7 +2,7 @@
 FROM python:3.10-slim
 
 # set work directory
-WORKDIR /app
+WORKDIR /usr/src/app
 
 # Copy package.json and package-lock.json
 COPY requirements.txt ./
@@ -13,3 +13,5 @@ ENV FLASK_ENV=development
 
 # install dependencies
 RUN pip install -r requirements.txt
+
+EXPOSE 3000

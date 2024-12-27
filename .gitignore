@@ -27,3 +27,4 @@ dist-ssr
 dump.rdb
 __pycache__
 .env
+.env.dev

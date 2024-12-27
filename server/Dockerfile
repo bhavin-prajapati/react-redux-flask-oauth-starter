@@ -10,3 +10,5 @@ ENV FLASK_ENV=production
 
 # install dependencies
 RUN pip install -r requirements.txt
+
+EXPOSE 3000
