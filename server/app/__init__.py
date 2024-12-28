@@ -26,8 +26,9 @@ app.register_blueprint(github_bp, url_prefix="/login")
 @app.route("/")
 def Hello():
     if github.authorized:
-        login_github()
-    response = make_response(redirect(app.config['VITE_CLIENT_SERVER']))
+        response = make_response(redirect('/api/v1/login-github'))
+    else:
+        response = make_response(redirect(app.config['VITE_CLIENT_SERVER']))
     return response
 
 @app.route("/counter")
