@@ -1,6 +1,14 @@
 # react-redux-flask-oauth-starter
 A Starter Kit for React, Redux and Flask with Social Media login integrated
 
+### Docker Compose
+```sh
+docker-compose build
+docker-compose up
+```
+
+## Standalone
+
 ### Redis
 ```sh
 brew install redis
