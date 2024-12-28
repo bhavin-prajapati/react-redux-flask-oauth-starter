@@ -1,5 +1,6 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import config from './config'
 
 const navigation = [
   { name: 'Dashboard', href: '#', current: true },
@@ -11,7 +12,7 @@ const navigation = [
 const userNavigation = [
   { name: 'Your Profile', href: '#' },
   { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '/logout' },
+  { name: 'Sign out', href: `${config.API_SERVER}/logout` },
 ]
 
 function classNames(...classes) {

@@ -1,6 +1,7 @@
 flask==3.0.3
 flask-cors
 flask-dance==7.1.0
+flask_login
 python-decouple==3.4
 python-dotenv
 gunicorn==20.1.0

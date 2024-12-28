@@ -9,29 +9,46 @@ from flask_cors import CORS, cross_origin
 from decouple import config
 
 # Construct the Flask APP
-client_build = '../../client/dist/'
-app = Flask(__name__, template_folder=client_build)
+app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}}) # allow CORS for all domains on all routes.
-app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Inject the Configuration (loaded from .env)
 app.config.from_object('app.config.Config')
 app.json.ensure_ascii = False
 
 # Connect to Redis
-r = redis.Redis(host=app.config['REDIS_SERVER_URL'], port=6379, db=0)
+r = redis.Redis(host='localhost', port=6379, db=0, protocol=3)
 
 # Register the Github OAuth BP built by Flask-Dance 
 github_bp = make_github_blueprint()
 app.register_blueprint(github_bp, url_prefix="/login")
 
-# Define the main route
 @app.route("/")
-def index():
+def Hello():
+    if github.authorized:
+        login_github()
+    response = make_response(redirect(app.config['VITE_CLIENT_SERVER']))
+    return response
+
+@app.route("/counter")
+def counter():
+    count = r.get('count')
+    if count == None:
+        r.set('count', 0)
+    else: 
+        r.set('count', int(count) + 1)
+    return "<p>Counter: " + str(count) + " </p>"
+
+@app.route('/api/v1/login-github')
+@cross_origin()
+def login_github():
+    """Log in a registered github user."""
     username=None
     user=None
-    if github.authorized:
-        resp = github.get("/user")
+    if not github.authorized:
+        return redirect(url_for('github.login'))
+    else:
+        resp = github.get('/user')
         assert resp.ok
         username=resp.json()["login"]
         name=resp.json()["name"]
@@ -39,32 +56,17 @@ def index():
         avatar_url=resp.json()["avatar_url"]
         github_login_url=url_for('github.login')
         user={"username":str(username),"name":str(name),"email": str(email),"avatar_url": str(avatar_url),"github_login_url":str(github_login_url)}
-    response = make_response(render_template( 'index.html', github=github, github_id=username, user=user))
+    print(request.referrer)
+    response = make_response(redirect(request.referrer))
     user_json = json.dumps(user, ensure_ascii=False)
     user_json_b64 = base64.b64encode(bytes(user_json, 'utf-8'))
     user_json_b64_str = str(user_json_b64)[1:]
     response.set_cookie("user", value=user_json_b64_str, max_age=None, expires=None, path='/', secure=None, httponly=False)
     return response
 
-@app.route('/api/v1/login-github')
-@cross_origin()
-def login_github():
-    """Log in a registered or authenticated user."""
-    if not github.authorized:
-        return redirect(url_for('github.login'))
-    res = github.get('/user')
-    print(request.referrer)
-    return redirect(request.referrer)
-
-@app.route('/<path:filename>')
-def custom_static(filename):
-    return send_from_directory(client_build, filename)
-
-@app.route("/api/v1/hello")
-def hello_world():
-    count = r.get('count')
-    if count == None:
-        r.set('count', 0)
-    else: 
-        r.set('count', int(count) + 1)
-    return "<p>Counter: " + str(count) + " </p>"
+@app.route("/api/v1/logout")
+def logout():
+    response = make_response(redirect(request.referrer))
+    response.set_cookie("session", '', expires=0)
+    response.set_cookie("user", '', expires=0)
+    return response
