@@ -21,7 +21,9 @@ app.json.ensure_ascii = False
 r = redis.Redis(host='localhost', port=6379, db=0, protocol=3)
 
 # Register the Google OAuth BP built by Flask-Dance 
-google_bp = make_google_blueprint()
+google_bp = make_google_blueprint(scope=["https://www.googleapis.com/auth/userinfo.email", 
+           "https://www.googleapis.com/auth/userinfo.profile", 
+           "openid"])
 app.register_blueprint(google_bp, url_prefix="/login")
 
 # Register the Github OAuth BP built by Flask-Dance 
@@ -36,6 +38,11 @@ def Hello():
         response = make_response(redirect('/api/v1/login-github'))
     else:
         response = make_response(redirect(app.config['VITE_CLIENT_SERVER']))
+    return response
+
+@app.errorhandler(404)
+def page_not_found(e):
+    response = make_response(redirect(app.config['VITE_CLIENT_SERVER']))
     return response
 
 @app.route("/counter")
@@ -54,17 +61,15 @@ def login_google():
     username=None
     user=None
     if not google.authorized:
+        print('not google.authorized')
         return redirect(url_for('google.login'))
-    else:
+    elif google.authorized:
+        print('google.authorized')
         resp = google.get("/oauth2/v1/userinfo")
-        print(resp)
-        assert resp.ok
-        username=resp.json()["login"]
         name=resp.json()["name"]
         email=resp.json()["email"]
-        avatar_url=resp.json()["avatar_url"]
-        google_login_url=url_for('google.login')
-        user={"username":str(username),"name":str(name),"email": str(email),"avatar_url": str(avatar_url),"google_login_url":str(google_login_url)}
+        avatar_url=resp.json()["picture"]
+        user={"name":str(name),"email": str(email),"avatar_url": str(avatar_url)}
     response = make_response(redirect(request.referrer))
     user_json = json.dumps(user, ensure_ascii=False)
     user_json_b64 = base64.b64encode(bytes(user_json, 'utf-8'))

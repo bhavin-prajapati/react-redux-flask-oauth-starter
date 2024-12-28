@@ -5,6 +5,7 @@ FROM python:3.10-slim
 WORKDIR /usr/src/app
 
 # set env variables
+ENV PYTHONUNBUFFERED=1
 ENV FLASK_APP=run.py
 ENV FLASK_ENV=production
 
