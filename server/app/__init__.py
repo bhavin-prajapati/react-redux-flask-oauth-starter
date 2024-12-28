@@ -30,6 +30,18 @@ app.register_blueprint(google_bp, url_prefix="/login")
 github_bp = make_github_blueprint()
 app.register_blueprint(github_bp, url_prefix="/login")
 
+@app.route("/privacy-policy")
+def privacy_policy():
+    return "<p>Privacy Policy</p>"
+
+@app.route("/terms-of-service")
+def terms_of_service():
+    return "<p>Terms Of Service</p>"
+
+@app.route("/data-deletion")
+def data_deletion():
+    return "<p>data-Data Deletion</p>"
+
 @app.route("/")
 def Hello():
     if google.authorized:

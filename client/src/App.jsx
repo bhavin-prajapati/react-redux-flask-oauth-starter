@@ -2,8 +2,11 @@
 import React, { Component } from 'react';
 import { instanceOf } from 'prop-types';
 import { withCookies, Cookies } from 'react-cookie';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthRoute } from './AuthRoute';
+import Layout from './Layout';
 import Dashboard from './Dashboard'
-import Signin from './Signin'
+import Login from './Login'
 
 class App extends Component {
   static propTypes = {
@@ -24,16 +27,22 @@ class App extends Component {
     };
   }
 
+  isAuthenticated() {
+    const { user } = this.state;
+    return user != null
+  }
+
   render() {
     const { user } = this.state;
     return (
-      <>
-        {user ? (
-          <Dashboard user={user} />
-        ) : (
-          <Signin />
-        )}
-      </>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Dashboard user={user} />} />
+            <Route path="/login" element={<Login />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     );
   }
 }
