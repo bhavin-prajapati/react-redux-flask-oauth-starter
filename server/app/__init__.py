@@ -22,7 +22,7 @@ app.json.ensure_ascii = False
 r = redis.Redis(host='localhost', port=6379, db=0, protocol=3)
 
 # Register the Facebook OAuth BP built by Flask-Dance 
-facebook_bp = make_facebook_blueprint(scope='email,public_profile,user_photos')
+facebook_bp = make_facebook_blueprint()
 app.register_blueprint(facebook_bp, url_prefix="/login")
 
 # Register the Google OAuth BP built by Flask-Dance 
@@ -87,13 +87,13 @@ def login_facebook():
     if not facebook.authorized:
         return redirect(url_for('facebook.login'))
     else:
-        resp = facebook.get('/me')
+        resp = facebook.get('/me?fields=id,email,picture,first_name,last_name')
         assert resp.ok
         print(resp.json())
-        name=resp.json()["name"]
+        name=resp.json()["first_name"] + " " + resp.json()["last_name"]
         email=resp.json()["email"]
-        avatar_url=resp.json()["avatar_url"]
-        user={"username":str(username),"name":str(name),"email": str(email),"avatar_url": str(avatar_url)}
+        avatar_url=resp.json()["picture"]["data"]["url"]
+        user={"name":str(name),"email": str(email),"avatar_url": str(avatar_url)}
     response = make_response(redirect(request.referrer))
     user_json = json.dumps(user, ensure_ascii=False)
     user_json_b64 = base64.b64encode(bytes(user_json, 'utf-8'))
