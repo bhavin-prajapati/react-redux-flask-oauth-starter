@@ -1,7 +1,7 @@
 import os
 import json
 import base64
-import redis
+import redis_client
 from flask import Flask, make_response, send_from_directory, redirect, url_for
 from flask import render_template, request, url_for, redirect
 from flask_dance.contrib.facebook import make_facebook_blueprint, facebook
@@ -18,8 +18,8 @@ cors = CORS(app, resources={r"/api/*": {"origins": "*"}}) # allow CORS for all d
 app.config.from_object('app.config.Config')
 app.json.ensure_ascii = False
 
-# Connect to Redis
-r = redis.Redis(host='localhost', port=6379, db=0, protocol=3)
+# Create Redis client
+redis = redis_client.Redis()
 
 # Register the Facebook OAuth BP built by Flask-Dance 
 facebook_bp = make_facebook_blueprint()
@@ -95,8 +95,10 @@ def login_facebook():
         avatar_url=resp.json()["picture"]["data"]["url"]
         user={"name":str(name),"email": str(email),"avatar_url": str(avatar_url)}
     response = make_response(redirect(request.referrer))
-    user_json = json.dumps(user, ensure_ascii=False)
-    user_json_b64 = base64.b64encode(bytes(user_json, 'utf-8'))
+    user_json_str = json.dumps(user, ensure_ascii=False)
+    user_json = json.loads(user_json_str)
+    redis.updateJson(email, ".facebook", user_json)
+    user_json_b64 = base64.b64encode(bytes(user_json_str, 'utf-8'))
     user_json_b64_str = str(user_json_b64)[1:]
     response.set_cookie("user", value=user_json_b64_str, max_age=None, expires=None, path='/', secure=None, httponly=False)
     return response
