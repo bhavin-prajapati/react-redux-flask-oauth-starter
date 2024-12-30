@@ -6,8 +6,8 @@ import redis
 from redis.commands.json.path import Path
 
 class Redis:
-    def __init__(self, host='localhost', port=6379, db=0, protocol=3):
-        self.redis = redis.Redis(host, port, db, protocol)
+    def __init__(self, host='redis', port=6379, db=0, protocol=3):
+        self.redis = redis.Redis(host, port=6379)
 
     def exists(self, key):
         return self.redis.exists(key)

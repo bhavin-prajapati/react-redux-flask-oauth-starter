@@ -83,6 +83,7 @@ def counter():
 @cross_origin()
 def login_facebook():
     """Log in a registered Facebook User."""
+    email=None
     user=None
     if not facebook.authorized:
         return redirect(url_for('facebook.login'))
@@ -96,8 +97,7 @@ def login_facebook():
         user={"name":str(name),"email": str(email),"avatar_url": str(avatar_url)}
     response = make_response(redirect(request.referrer))
     user_json_str = json.dumps(user, ensure_ascii=False)
-    user_json = json.loads(user_json_str)
-    redis.updateJson(email, ".facebook", user_json)
+    redis.set(email, user_json_str)
     user_json_b64 = base64.b64encode(bytes(user_json_str, 'utf-8'))
     user_json_b64_str = str(user_json_b64)[1:]
     response.set_cookie("user", value=user_json_b64_str, max_age=None, expires=None, path='/', secure=None, httponly=False)
@@ -119,8 +119,9 @@ def login_google():
         avatar_url=resp.json()["picture"]
         user={"name":str(name),"email": str(email),"avatar_url": str(avatar_url)}
     response = make_response(redirect(request.referrer))
-    user_json = json.dumps(user, ensure_ascii=False)
-    user_json_b64 = base64.b64encode(bytes(user_json, 'utf-8'))
+    user_json_str = json.dumps(user, ensure_ascii=False)
+    redis.set(email, user_json_str)
+    user_json_b64 = base64.b64encode(bytes(user_json_str, 'utf-8'))
     user_json_b64_str = str(user_json_b64)[1:]
     response.set_cookie("user", value=user_json_b64_str, max_age=None, expires=None, path='/', secure=None, httponly=False)
     return response
@@ -143,8 +144,9 @@ def login_github():
         github_login_url=url_for('github.login')
         user={"username":str(username),"name":str(name),"email": str(email),"avatar_url": str(avatar_url),"github_login_url":str(github_login_url)}
     response = make_response(redirect(request.referrer))
-    user_json = json.dumps(user, ensure_ascii=False)
-    user_json_b64 = base64.b64encode(bytes(user_json, 'utf-8'))
+    user_json_str = json.dumps(user, ensure_ascii=False)
+    redis.set(email, user_json_str)
+    user_json_b64 = base64.b64encode(bytes(user_json_str, 'utf-8'))
     user_json_b64_str = str(user_json_b64)[1:]
     response.set_cookie("user", value=user_json_b64_str, max_age=None, expires=None, path='/', secure=None, httponly=False)
     return response
