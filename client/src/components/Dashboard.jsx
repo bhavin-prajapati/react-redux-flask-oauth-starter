@@ -3,7 +3,6 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import config from '../config'
 
 export default function Dashboard({ user }) {
-  console.log('user', user)
   return (
     <>
       <header className="bg-white shadow">

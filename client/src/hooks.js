@@ -1,8 +1,15 @@
 import store from './store';
 
 export const useLoginStatus = () => {
-    const { user } = store.getState();
-    return user != null || !(Object.entries(obj).length === 0 && obj.constructor === Object)
+    const { auth } = store.getState();
+    const user = auth.user;
+    if (user == null || user == undefined) { return false; }
+    else { return !(Object.entries(user).length === 0 && user.constructor === Object); }
+}
+
+export const useGetUser = () => {
+    const { auth } = store.getState();
+    return auth.user;
 }
 
 export const useGetUserFromCookies = (cookies) => {

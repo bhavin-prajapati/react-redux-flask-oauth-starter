@@ -5,7 +5,7 @@ const initialState = {
 const authReducer = (state = initialState, action) => {
     switch (action.type) {
         case "GET_USER_SUCCESS":
-            return { ...state, user: state.user };
+            return Object.assign({ ...state, user: action.data });
         default:
             return state;
     }

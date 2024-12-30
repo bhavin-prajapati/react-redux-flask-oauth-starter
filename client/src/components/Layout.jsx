@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { useLoginStatus, useGetUser } from '../hooks'
 import config from '../config'
 
 const navigation = [
@@ -16,13 +17,13 @@ const userNavigation = [
     { name: 'Sign out', href: `${config.API_SERVER}/logout` },
 ]
 
-function classNames(...classes) {
+const classNames = (...classes) => {
     return classes.filter(Boolean).join(' ')
 }
 
-function Layout({ user }) {
-    let isUserLoggedIn = user == null ? false : true
-    console.log('isUserLoggedIn', isUserLoggedIn)
+const Layout = () => {
+    const isLoggedIn = useLoginStatus();
+    const user = useGetUser();
     return (
         <div className="min-h-full">
             <Disclosure as="nav" className="bg-gray-800">
@@ -57,7 +58,7 @@ function Layout({ user }) {
                         <div className="hidden md:block">
                             <div className="ml-4 flex items-center md:ml-6">
 
-                                {isUserLoggedIn ? (<>
+                                {isLoggedIn ? (<>
                                     <button
                                         type="button"
                                         className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -128,7 +129,7 @@ function Layout({ user }) {
                         ))}
                     </div>
                     <div className="border-t border-gray-700 pb-3 pt-4">
-                        {isUserLoggedIn ? (
+                        {isLoggedIn ? (
                             <div className="flex items-center px-5">
                                 <div className="shrink-0">
                                     <img alt="" src={user.avatar_url} className="size-10 rounded-full" />

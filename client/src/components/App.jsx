@@ -6,10 +6,10 @@ import { withCookies, Cookies } from 'react-cookie';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { RequireAuth } from './RequireAuth';
 import { useGetUserFromCookies } from '../hooks'
+import { getUserFromState } from '../selectors/index'
 import Layout from './Layout';
 import Dashboard from './Dashboard'
 import Login from './Login'
-
 
 class App extends Component {
   static propTypes = {
@@ -20,6 +20,7 @@ class App extends Component {
     super(props);
     const { cookies } = props;
     let user = useGetUserFromCookies(cookies);
+    this.props.getUserSuccess(user);
   }
 
   render() {
@@ -39,11 +40,11 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.user
+  user: getUserFromState(state)
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getUserSuccess: () => dispatch({ type: "GET_USER_SUCCESS" }),
+  getUserSuccess: (user) => dispatch({ type: "GET_USER_SUCCESS", data: user }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withCookies(App));
