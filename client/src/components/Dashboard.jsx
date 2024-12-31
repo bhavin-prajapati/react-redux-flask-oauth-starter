@@ -1,18 +1,52 @@
-import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import config from '../config'
+import { PageContainer } from '@toolpad/core/PageContainer';
+import { styled } from '@mui/material/styles';
+import Grid from '@mui/material/Grid2';
 
-export default function Dashboard({ user }) {
+const Skeleton = styled('div')(({ theme, height }) => ({
+  backgroundColor: theme.palette.action.hover,
+  borderRadius: theme.shape.borderRadius,
+  height,
+  content: '" "',
+}));
+
+export default function Dashboard() {
   return (
-    <>
-      <header className="bg-white shadow">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
-        </div>
-      </header>
-      <main>
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">{/* Your content */}</div>
-      </main>
-    </>
+    <PageContainer>
+      <Grid container spacing={1}>
+        <Grid size={5} />
+        <Grid size={12}>
+          <Skeleton height={14} />
+        </Grid>
+        <Grid size={12}>
+          <Skeleton height={14} />
+        </Grid>
+        <Grid size={4}>
+          <Skeleton height={100} />
+        </Grid>
+        <Grid size={8}>
+          <Skeleton height={100} />
+        </Grid>
+
+        <Grid size={12}>
+          <Skeleton height={150} />
+        </Grid>
+        <Grid size={12}>
+          <Skeleton height={14} />
+        </Grid>
+
+        <Grid size={3}>
+          <Skeleton height={100} />
+        </Grid>
+        <Grid size={3}>
+          <Skeleton height={100} />
+        </Grid>
+        <Grid size={3}>
+          <Skeleton height={100} />
+        </Grid>
+        <Grid size={3}>
+          <Skeleton height={100} />
+        </Grid>
+      </Grid>
+    </PageContainer>
   )
 }
