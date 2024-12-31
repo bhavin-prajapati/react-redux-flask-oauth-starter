@@ -83,8 +83,8 @@ def login_facebook():
         assert resp.ok
         name=resp.json()["first_name"] + " " + resp.json()["last_name"]
         email=resp.json()["email"]
-        avatar_url=resp.json()["picture"]["data"]["url"]
-        user={"name":str(name),"email": str(email),"avatar_url": str(avatar_url)}
+        image=resp.json()["picture"]["data"]["url"]
+        user={"name":str(name),"email": str(email),"image": str(image)}
     response = make_response(redirect(request.referrer))
     user_json_str = json.dumps(user, ensure_ascii=False)
     if redis.exists("email:"+email):
@@ -109,8 +109,8 @@ def login_google():
         resp = google.get("/oauth2/v1/userinfo")
         name=resp.json()["name"]
         email=resp.json()["email"]
-        avatar_url=resp.json()["picture"]
-        user={"name":str(name),"email": str(email),"avatar_url": str(avatar_url)}
+        image=resp.json()["picture"]
+        user={"name":str(name),"email": str(email),"image": str(image)}
     response = make_response(redirect(request.referrer))
     user_json_str = json.dumps(user, ensure_ascii=False)
     if redis.exists("email:"+email):
@@ -136,8 +136,8 @@ def login_github():
         assert resp.ok
         name=resp.json()["name"]
         email=resp.json()["email"]
-        avatar_url=resp.json()["avatar_url"]
-        user={"name":str(name),"email": str(email),"avatar_url": str(avatar_url)}
+        image=resp.json()["avatar_url"]
+        user={"name":str(name),"email": str(email),"image": str(image)}
     response = make_response(redirect(request.referrer))
     user_json_str = json.dumps(user, ensure_ascii=False)
     if redis.exists("email:"+email):
