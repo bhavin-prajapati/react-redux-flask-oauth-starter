@@ -24,17 +24,18 @@ redis-stack-server: https://hub.docker.com/r/redis/redis-stack-server
 
 ## Client-side Libraries
 
-* React
-* Redux
-* Material UI
+* [React](https://react.dev/)
+* [Redux Toolkit](https://redux-toolkit.js.org/)
+* [Material UI](https://mui.com/material-ui/)
+* [Toolpad](https://mui.com/toolpad)
 
 ### server
 
 ## Server-side Libraries
 
-* flask
-* flask-dance
-* redis-py
+* [flask](https://flask.palletsprojects.com/en/stable/)
+* [flask-dance](https://flask-dance.readthedocs.io/en/latest/index.html)
+* [redis-py](https://pypi.org/project/redis/)
 
 ## License
 
