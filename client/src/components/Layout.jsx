@@ -7,8 +7,9 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import LayersIcon from '@mui/icons-material/Layers';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
-import { BrowserRouter, Outlet } from 'react-router-dom';
+import { Outlet, useHref } from 'react-router-dom';
 import { useLoginStatus, useGetUser } from '../hooks'
+import config from '../config'
 
 const NAVIGATION = [
     {
@@ -100,18 +101,23 @@ export default function DashboardLayoutBasic(props) {
             },
             signOut: () => {
                 setSession(null);
+                window.location.assign(`${config.API_SERVER}/logout`)
             },
         };
     }, []);
-
 
     const router = useDemoRouter('/dashboard');
 
     return (
         <AppProvider
-            session={session}
-            authentication={authentication}
+            session={isLoggedIn ? session : null}
+            authentication={isLoggedIn ? authentication : null}
             navigation={NAVIGATION}
+            branding={{
+                logo: <img src="https://mui.com/static/logo.png" alt="MUI logo" />,
+                title: 'react-redux-flask-oauth-starter',
+                homeUrl: '/',
+            }}
             router={router}
             theme={demoTheme}
         >
