@@ -35,3 +35,9 @@ redis-stack-server: https://hub.docker.com/r/redis/redis-stack-server
 * flask
 * flask-dance
 * redis-py
+
+## License
+
+This source code is licensed under the GPL-3.0
+license found in the [LICENSE](https://github.com/bhavin-prajapati/react-redux-node-auth-starter/blob/master/LICENSE)
+file.
