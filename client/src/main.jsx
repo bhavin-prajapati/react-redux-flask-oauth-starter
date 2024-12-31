@@ -2,7 +2,6 @@ import { Provider } from 'react-redux';
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { CookiesProvider } from 'react-cookie';
-import './index.css'
 import App from './components/App.jsx'
 import store from './store/index.js';
 

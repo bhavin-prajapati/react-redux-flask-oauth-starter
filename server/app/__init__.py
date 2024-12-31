@@ -127,7 +127,6 @@ def login_google():
 @cross_origin()
 def login_github():
     """Log in a registered Github User."""
-    username=None
     email=None
     user=None
     if not github.authorized:
