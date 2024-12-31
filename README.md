@@ -13,14 +13,11 @@ docker-compose up
 ## `Dashboard`
 ![Screenshot](client/public/dashboard.png)
 
-
-## Standalone
-
 ### Redis
 
-redis-stack-server: https://hub.docker.com/r/redis/redis-stack-server
+* [redis-stack-server](https://hub.docker.com/r/redis/redis-stack-server)
 
-### client
+### Client
 
 ## Client-side Libraries
 
@@ -29,7 +26,7 @@ redis-stack-server: https://hub.docker.com/r/redis/redis-stack-server
 * [Material UI](https://mui.com/material-ui/)
 * [Toolpad](https://mui.com/toolpad)
 
-### server
+### Server
 
 ## Server-side Libraries
 
