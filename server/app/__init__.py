@@ -70,15 +70,6 @@ def page_not_found(e):
     response = make_response(redirect(app.config['VITE_CLIENT_SERVER']))
     return response
 
-@app.route("/counter")
-def counter():
-    count = r.get('count')
-    if count == None:
-        r.set('count', 0)
-    else: 
-        r.set('count', int(count) + 1)
-    return "<p>Counter: " + str(count) + " </p>"
-
 @app.route('/api/v1/login-facebook')
 @cross_origin()
 def login_facebook():
@@ -90,14 +81,17 @@ def login_facebook():
     else:
         resp = facebook.get('/me?fields=id,email,picture,first_name,last_name')
         assert resp.ok
-        print(resp.json())
         name=resp.json()["first_name"] + " " + resp.json()["last_name"]
         email=resp.json()["email"]
         avatar_url=resp.json()["picture"]["data"]["url"]
         user={"name":str(name),"email": str(email),"avatar_url": str(avatar_url)}
     response = make_response(redirect(request.referrer))
     user_json_str = json.dumps(user, ensure_ascii=False)
-    redis.set(email, user_json_str)
+    if redis.exists("email:"+email):
+        redis.setJson("email:"+email, ".facebook", user)
+    else:
+        redis.setJson("email:"+email, ".", { "facebook": {}})
+        redis.setJson("email:"+email, ".facebook", user)
     user_json_b64 = base64.b64encode(bytes(user_json_str, 'utf-8'))
     user_json_b64_str = str(user_json_b64)[1:]
     response.set_cookie("user", value=user_json_b64_str, max_age=None, expires=None, path='/', secure=None, httponly=False)
@@ -107,12 +101,11 @@ def login_facebook():
 @cross_origin()
 def login_google():
     """Log in a registered Google User."""
+    email=None
     user=None
     if not google.authorized:
-        print('not google.authorized')
         return redirect(url_for('google.login'))
     elif google.authorized:
-        print('google.authorized')
         resp = google.get("/oauth2/v1/userinfo")
         name=resp.json()["name"]
         email=resp.json()["email"]
@@ -120,7 +113,11 @@ def login_google():
         user={"name":str(name),"email": str(email),"avatar_url": str(avatar_url)}
     response = make_response(redirect(request.referrer))
     user_json_str = json.dumps(user, ensure_ascii=False)
-    redis.set(email, user_json_str)
+    if redis.exists("email:"+email):
+        redis.setJson("email:"+email, ".google", user)
+    else:
+        redis.setJson("email:"+email, ".", { "google": {}})
+        redis.setJson("email:"+email, ".google", user)
     user_json_b64 = base64.b64encode(bytes(user_json_str, 'utf-8'))
     user_json_b64_str = str(user_json_b64)[1:]
     response.set_cookie("user", value=user_json_b64_str, max_age=None, expires=None, path='/', secure=None, httponly=False)
@@ -131,21 +128,24 @@ def login_google():
 def login_github():
     """Log in a registered Github User."""
     username=None
+    email=None
     user=None
     if not github.authorized:
         return redirect(url_for('github.login'))
     else:
         resp = github.get('/user')
         assert resp.ok
-        username=resp.json()["login"]
         name=resp.json()["name"]
         email=resp.json()["email"]
         avatar_url=resp.json()["avatar_url"]
-        github_login_url=url_for('github.login')
-        user={"username":str(username),"name":str(name),"email": str(email),"avatar_url": str(avatar_url),"github_login_url":str(github_login_url)}
+        user={"name":str(name),"email": str(email),"avatar_url": str(avatar_url)}
     response = make_response(redirect(request.referrer))
     user_json_str = json.dumps(user, ensure_ascii=False)
-    redis.set(email, user_json_str)
+    if redis.exists("email:"+email):
+        redis.setJson("email:"+email, ".github", user)
+    else:
+        redis.setJson("email:"+email, ".", { "github": {}})
+        redis.setJson("email:"+email, ".github", user)
     user_json_b64 = base64.b64encode(bytes(user_json_str, 'utf-8'))
     user_json_b64_str = str(user_json_b64)[1:]
     response.set_cookie("user", value=user_json_b64_str, max_age=None, expires=None, path='/', secure=None, httponly=False)

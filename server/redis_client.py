@@ -18,5 +18,8 @@ class Redis:
     def set(self, key, value):
         return self.redis.set(key, value)
     
-    def updateJson(self, key, path, value):
+    def getJson(self, key, path, value):
+        return self.redis.json().get(key, Path(path), value)
+
+    def setJson(self, key, path, value):
         return self.redis.json().set(key, Path(path), value)
