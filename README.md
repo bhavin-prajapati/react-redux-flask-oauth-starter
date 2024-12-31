@@ -7,10 +7,10 @@ docker-compose build
 docker-compose up
 ```
 
-## `Sign In`
+## Signin Page
 ![Screenshot](client/public/signin.png)
 
-## `Dashboard`
+## Dashboard Page
 ![Screenshot](client/public/dashboard.png)
 
 ## Redis Docker Image
