@@ -14,6 +14,9 @@ import Home from './Home';
 import Login from './Login';
 import Create from './Create';
 import Game from './Game';
+import Leaderboard from './Leaderboard';
+import PersonalReport from './PersonalReport';
+import GlobalReport from './GlobalReport';
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +39,18 @@ export const router = createBrowserRouter([
       {
         path: "/game",
         element: (<RequireAuth><Game /></RequireAuth>),
+      },
+      {
+        path: "/leaderboard",
+        element: (<RequireAuth><Leaderboard /></RequireAuth>),
+      },
+      {
+        path: "/reports/personal",
+        element: (<RequireAuth><PersonalReport /></RequireAuth>),
+      },
+      {
+        path: "/reports/global",
+        element: (<RequireAuth><GlobalReport /></RequireAuth>),
       },
     ],
   },
