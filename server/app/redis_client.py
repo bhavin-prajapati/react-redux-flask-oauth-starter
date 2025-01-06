@@ -11,15 +11,15 @@ class Redis:
 
     def exists(self, key):
         return self.redis.exists(key)
-
+    
     def get(self, key):
         return self.redis.get(key)
     
     def set(self, key, value):
         return self.redis.set(key, value)
     
-    def getJson(self, key, path, value):
-        return self.redis.json().get(key, Path(path), value)
+    def getJson(self, key, path):
+        return self.redis.json().get(key, Path(path))
 
     def setJson(self, key, path, value):
         return self.redis.json().set(key, Path(path), value)

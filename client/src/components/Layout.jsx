@@ -1,30 +1,41 @@
 import * as React from 'react';
+import { bindActionCreators } from 'redux';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { extendTheme } from '@mui/material/styles';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import DescriptionIcon from '@mui/icons-material/Description';
-import LayersIcon from '@mui/icons-material/Layers';
+import CreateIcon from '@mui/icons-material/Create';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import PersonIcon from '@mui/icons-material/Person';
+import LanguageIcon from '@mui/icons-material/Language';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
-import { Outlet, useHref } from 'react-router-dom';
-import { useLoginStatus, useGetUser } from '../hooks'
-import config from '../config'
+import { Outlet } from 'react-router-dom';
+import logo from '../assets/logo.png';
+import { router } from './App'
+import { logout } from '../actionCreators/authActionCreator';
 
-const NAVIGATION = [
+const navigation = [
     {
         kind: 'header',
         title: 'Main items',
     },
     {
-        segment: 'dashboard',
-        title: 'Dashboard',
+        segment: 'home',
+        title: 'Home',
         icon: <DashboardIcon />,
     },
     {
-        segment: 'orders',
-        title: 'Orders',
-        icon: <ShoppingCartIcon />,
+        segment: 'create',
+        title: 'Create Game',
+        icon: <CreateIcon />,
+    },
+    {
+        segment: 'leaderboard',
+        title: 'Leaderboard',
+        icon: <LeaderboardIcon />,
     },
     {
         kind: 'divider',
@@ -36,25 +47,20 @@ const NAVIGATION = [
     {
         segment: 'reports',
         title: 'Reports',
-        icon: <BarChartIcon />,
+        icon: <AnalyticsIcon />,
         children: [
             {
-                segment: 'sales',
-                title: 'Sales',
-                icon: <DescriptionIcon />,
+                segment: 'personal',
+                title: 'Personal',
+                icon: <PersonIcon />,
             },
             {
-                segment: 'traffic',
-                title: 'Traffic',
-                icon: <DescriptionIcon />,
+                segment: 'global',
+                title: 'Global',
+                icon: <LanguageIcon />,
             },
         ],
-    },
-    {
-        segment: 'integrations',
-        title: 'Integrations',
-        icon: <LayersIcon />,
-    },
+    }
 ];
 
 const demoTheme = extendTheme({
@@ -71,59 +77,67 @@ const demoTheme = extendTheme({
     },
 });
 
-function useDemoRouter(initialPath) {
-    const [pathname, setPathname] = React.useState(initialPath);
-    const router = React.useMemo(() => {
-        return {
-            pathname,
-            searchParams: new URLSearchParams(),
-            navigate: (path) => setPathname(String(path)),
-        };
-    }, [pathname]);
-
-    return router;
-}
-
-export default function DashboardLayoutBasic(props) {
-    const isLoggedIn = useLoginStatus();
-    const user = useGetUser();
-
+const LayoutComponent = (props) => {
     const [session, setSession] = React.useState({
-        user: user ? user : null
+        user: props.user
     });
+    const navigate = useNavigate();
 
     const authentication = React.useMemo(() => {
         return {
             signIn: () => {
                 setSession({
-                    user: user ? user : null
+                    user: props.user
                 });
             },
             signOut: () => {
                 setSession(null);
-                window.location.assign(`${config.API_SERVER}/logout`)
+                props.logout();
+                navigate(0)
             },
         };
     }, []);
 
-    const router = useDemoRouter('/dashboard');
-
     return (
         <AppProvider
-            session={isLoggedIn ? session : null}
-            authentication={isLoggedIn ? authentication : null}
-            navigation={NAVIGATION}
+            session={session}
+            authentication={authentication}
+            navigation={props.user ? navigation : []}
             branding={{
-                logo: <img src="https://mui.com/static/logo.png" alt="MUI logo" />,
+                logo: <img src={logo} />,
                 title: 'react-redux-flask-oauth-starter',
-                homeUrl: '/',
+                homeUrl: '/home',
             }}
             router={router}
             theme={demoTheme}
         >
-            <DashboardLayout>
+            <DashboardLayout hideNavigation={props.user ? false : true}>
                 <Outlet />
             </DashboardLayout>
         </AppProvider>
     );
 }
+
+LayoutComponent.propTypes = {
+    user: PropTypes.object,
+    logout: PropTypes.func,
+};
+
+const mapStateToProps = (state) => {
+    return {
+        user: state.auth.user
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({
+        logout: logout
+    }, dispatch);
+};
+
+const Layout = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(LayoutComponent);
+
+export default Layout;

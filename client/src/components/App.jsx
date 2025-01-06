@@ -1,50 +1,77 @@
 // App.jsx
-import React, { Component } from 'react';
+import React from 'react';
+import { bindActionCreators } from 'redux';
+import PropTypes from 'prop-types';
 import { connect } from "react-redux";
 import { instanceOf } from 'prop-types';
 import { withCookies, Cookies } from 'react-cookie';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { RequireAuth } from './RequireAuth';
-import { useGetUserFromCookies } from '../hooks'
+import { useGetUserFromCookies } from '../utils/hooks'
 import { getUserFromState } from '../selectors/index'
 import Layout from './Layout';
-import Dashboard from './Dashboard'
-import Login from './Login'
+import Home from './Home';
+import Login from './Login';
+import Create from './Create';
+import Game from './Game';
 
-class App extends Component {
-  static propTypes = {
-    cookies: instanceOf(Cookies).isRequired
-  };
+export const router = createBrowserRouter([
+  {
+    path: "",
+    element: <RequireAuth><Layout /></RequireAuth>,
+    children: [
+      { index: true, element: <Navigate to="/home" replace /> },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/home",
+        element: (<RequireAuth><Home /></RequireAuth>),
+      },
+      {
+        path: "/create",
+        element: (<RequireAuth><Create /></RequireAuth>),
+      },
+      {
+        path: "/game",
+        element: (<RequireAuth><Game /></RequireAuth>),
+      },
+    ],
+  },
+]);
 
-  constructor(props) {
-    super(props);
+const AppComponent = (props) => {
+  React.useMemo(() => {
     const { cookies } = props;
     let user = useGetUserFromCookies(cookies);
-    this.props.getUserSuccess(user);
-  }
+    props.getUserSuccess(user);
+  }, []);
 
-  render() {
-    return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<RequireAuth>
-              <Dashboard user={this.props.user} />
-            </RequireAuth>} />
-            <Route path="/login" element={<Login />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    );
-  }
+  return (
+    <RouterProvider router={router} />
+  )
 }
 
-const mapStateToProps = (state) => ({
-  user: getUserFromState(state)
-});
+AppComponent.propTypes = {
+  cookies: instanceOf(Cookies).isRequired,
+};
 
-const mapDispatchToProps = (dispatch) => ({
-  getUserSuccess: (user) => dispatch({ type: "GET_USER_SUCCESS", data: user }),
-});
+const mapStateToProps = (state) => {
+  return {
+    user: getUserFromState(state)
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(withCookies(App));
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    getUserSuccess: (user) => dispatch({ type: "GET_USER_SUCCESS", data: user }),
+  }, dispatch);
+};
+
+const App = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withCookies(AppComponent));
+
+export default App;

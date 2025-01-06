@@ -13,6 +13,9 @@ docker-compose up
 ## Dashboard Page
 ![Screenshot](client/public/dashboard.png)
 
+## Game Page
+![Screenshot](client/public/game.png)
+
 ## Redis Docker Image
 
 * [redis-stack-server](https://hub.docker.com/r/redis/redis-stack-server)
